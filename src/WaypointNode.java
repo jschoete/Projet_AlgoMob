@@ -6,8 +6,13 @@ import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
+<<<<<<< HEAD
 
 public class WaypointNode extends Node implements ClockListener {
+=======
+//test commit
+public class WaypointNode extends Node {
+>>>>>>> 79e6e3b5fbe80e02850a6000d300d22418d746e9
     Queue<Point2D> destinations = new LinkedList<>();
     double speed = 1;
 
