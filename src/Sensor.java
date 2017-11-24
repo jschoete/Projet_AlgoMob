@@ -6,6 +6,7 @@ import java.awt.*;
 public class Sensor extends Node {
     Node parent = null;
     int battery = 255;
+    BatteryState batteryState = new BatteryState(getX(), getY(), battery);
 
     @Override
     public void onMessage(Message message) {
@@ -24,6 +25,12 @@ public class Sensor extends Node {
         } else if (message.getFlag().equals("SENSING")) {
             // retransmit up the tree
             send(parent, message);
+        }
+        else if(message.getFlag().equals("BAT")){
+            send(parent, message);
+        }
+        else if(message.getFlag().equals("BAT_INIT")){
+            send(parent, new Message(batteryState, "BAT"));
         }
     }
 

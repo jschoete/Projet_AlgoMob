@@ -25,11 +25,20 @@ public class Main {
         tp.fromFile("src/sensors.tp"); // to be adapted
 
         // Add base station
-        tp.addNode(100, 80, new BaseStation());
+        BaseStation baseStation = new BaseStation();
+        tp.addNode(100, 80, baseStation);
 
         // Add two robots
-        tp.addNode(90, 40, new Robot());
-        tp.addNode(60, 80, new Robot());
+        Robot robot1 = new Robot();
+        Robot robot2 = new Robot();
+        tp.addNode(90, 40, robot1);
+        tp.addNode(60, 80, robot2);
+
+
+        Robot[] listRobot = {robot1, robot2};
+        baseStation.addRobot(listRobot);
+
+
 
         new JViewer(tp);
         tp.start(); // starts the clock
