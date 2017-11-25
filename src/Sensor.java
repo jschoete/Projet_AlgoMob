@@ -49,10 +49,8 @@ public class Sensor extends Node {
             }
         }
         if(battery <= minBattery){
-            if (battery <= minBattery) {
-                BatteryState batteryState = new BatteryState(this.getX(), this.getY(), this.battery);
-                send(parent, new Message(batteryState, "BAT"));
-            }
+            BatteryState batteryState = new BatteryState(this.getX(), this.getY(), this.battery);
+            send(parent, new Message(batteryState, "BAT"));
         }
     }
 

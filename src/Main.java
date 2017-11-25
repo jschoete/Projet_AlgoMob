@@ -38,6 +38,9 @@ public class Main {
         robot1.setBase(baseStation.getX(), baseStation.getY());
         robot2.setBase(baseStation.getX(), baseStation.getY());
 
+
+
+
         baseStation.setListRobot(new Robot[]{robot1, robot2});
 
         tp.addNode(90, 40, robot1);

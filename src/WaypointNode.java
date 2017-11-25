@@ -10,6 +10,7 @@ public class WaypointNode extends Node{
     double base_x;
     double base_y;
     int time = 0;
+    int return_time = 200;
     public void setBase(double x, double y){
         base_x = x;
         base_y = y;
@@ -25,11 +26,11 @@ public class WaypointNode extends Node{
 
     @Override
     public void onClock() {
-        if(++time == 300) {
+        /*if(++time == return_time) {
             //System.out.println("OnClock Robot -> Go to base");
             addDestination(base_x, base_y);
             time = 0;
-        }
+        }*/
         if (!destinations.isEmpty()) {
             Point2D dest = destinations.peek();
             if (distance(dest) > speed) {
@@ -40,6 +41,9 @@ public class WaypointNode extends Node{
                 destinations.poll();
                 onArrival();
             }
+        }
+        else{
+            addDestination(base_x, base_y);
         }
     }
 

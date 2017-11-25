@@ -1,17 +1,16 @@
 import jbotsim.Message;
 import jbotsim.Node;
-
 import java.util.ArrayList;
 
 public class Robot extends WaypointNode {
     int idR;
-
     public void setIdRobot(int id) {
         this.idR = id;
     }
     public int getIdRobot() {
         return idR;
     }
+
     @Override
     public void onStart() {
         setIcon("src/robot.png"); // to be adapted
@@ -30,7 +29,7 @@ public class Robot extends WaypointNode {
                     this.addDestination(b.getX(), b.getY());
                 }
             else {
-                for (int i = idR+1; i < message.getSender().getNeighbors().size() - 1; i += 2) {
+                for (int i = idR; i < message.getSender().getNeighbors().size() - 1; i += 2) {
                     addDestination(message.getSender().getNeighbors().get(i).getX(),
                             message.getSender().getNeighbors().get(i).getY());
                 }
@@ -45,7 +44,7 @@ public class Robot extends WaypointNode {
             ((Sensor) node).battery = 255;
         }
         if(node instanceof BaseStation){
-            send(node, new Message(null, "SEND_LIST"));
+            send(node, new Message(destinations, "SEND_LIST"));
         }
     }
 
