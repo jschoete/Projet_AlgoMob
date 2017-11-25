@@ -1,29 +1,22 @@
-import jbotsim.Message;
 import jbotsim.Node;
-import jbotsim.event.ClockListener;
-
 import java.awt.geom.Point2D;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.Queue;
-<<<<<<< HEAD
+import java.util.*;
 
-public class WaypointNode extends Node implements ClockListener {
-=======
-//test commit
-public class WaypointNode extends Node {
->>>>>>> 79e6e3b5fbe80e02850a6000d300d22418d746e9
+public class WaypointNode extends Node{
+
     Queue<Point2D> destinations = new LinkedList<>();
     double speed = 1;
 
-
-    int default_clock;
-    int top_clock = 0;
-
-    Node base;
+    double base_x;
+    double base_y;
+    int time = 0;
+    public void setBase(double x, double y){
+        base_x = x;
+        base_y = y;
+    }
 
     public void addDestination(double x, double y){
-        destinations.add(new Point2D.Double(x, y));
+       destinations.add(new Point2D.Double(x, y));
     }
 
     public void setSpeed(double speed) {
@@ -32,8 +25,11 @@ public class WaypointNode extends Node {
 
     @Override
     public void onClock() {
-        if(++top_clock == default_clock)
-            addDestination(base.getX(), base.getY());
+        if(++time == 300) {
+            //System.out.println("OnClock Robot -> Go to base");
+            addDestination(base_x, base_y);
+            time = 0;
+        }
         if (!destinations.isEmpty()) {
             Point2D dest = destinations.peek();
             if (distance(dest) > speed) {
@@ -44,26 +40,6 @@ public class WaypointNode extends Node {
                 destinations.poll();
                 onArrival();
             }
-        }
-    }
-
-    @Override
-    public void onMessage(Message message) {
-        if (message.getFlag().equals("BASE")){
-            default_clock = (int) message.getContent();
-            base = message.getSender();
-        }
-        else if (message.getFlag().equals("GOTO")){
-            ArrayList<BatteryState> batteryState = (ArrayList<BatteryState>) message.getContent();
-            if(!batteryState.isEmpty())
-                addList(batteryState);
-        }
-    }
-
-    public void addList(ArrayList<BatteryState> list){
-        while(!list.isEmpty()) {
-            BatteryState b = list.remove(0);
-            this.addDestination(b.getX(), b.getY());
         }
     }
 

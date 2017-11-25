@@ -1,6 +1,3 @@
-import java.awt.*;
-import java.awt.geom.Point2D;
-
 public class BatteryState {
     double x;
     double y;
@@ -21,4 +18,5 @@ public class BatteryState {
     public double getBattery(){
         return battery;
     }
+
 }

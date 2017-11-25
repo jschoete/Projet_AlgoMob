@@ -31,14 +31,17 @@ public class Main {
         // Add two robots
         Robot robot1 = new Robot();
         Robot robot2 = new Robot();
+
+        robot1.setIdRobot(0);
+        robot1.setIdRobot(1);
+
+        robot1.setBase(baseStation.getX(), baseStation.getY());
+        robot2.setBase(baseStation.getX(), baseStation.getY());
+
+        baseStation.setListRobot(new Robot[]{robot1, robot2});
+
         tp.addNode(90, 40, robot1);
         tp.addNode(60, 80, robot2);
-
-
-        Robot[] listRobot = {robot1, robot2};
-        baseStation.addRobot(listRobot);
-
-
 
         new JViewer(tp);
         tp.start(); // starts the clock

@@ -6,7 +6,7 @@ import java.awt.*;
 public class Sensor extends Node {
     Node parent = null;
     int battery = 255;
-    BatteryState batteryState = new BatteryState(getX(), getY(), battery);
+    int minBattery = 100;
 
     @Override
     public void onMessage(Message message) {
@@ -29,9 +29,6 @@ public class Sensor extends Node {
         else if(message.getFlag().equals("BAT")){
             send(parent, message);
         }
-        else if(message.getFlag().equals("BAT_INIT")){
-            send(parent, new Message(batteryState, "BAT"));
-        }
     }
 
     @Override
@@ -49,6 +46,12 @@ public class Sensor extends Node {
             if (Math.random() < 0.02) { // from time to time...
                 double sensedValue = Math.random(); // sense a value
                 send(parent, new Message(sensedValue, "SENSING")); // send it to parent
+            }
+        }
+        if(battery <= minBattery){
+            if (battery <= minBattery) {
+                BatteryState batteryState = new BatteryState(this.getX(), this.getY(), this.battery);
+                send(parent, new Message(batteryState, "BAT"));
             }
         }
     }

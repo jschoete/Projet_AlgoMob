@@ -1,19 +1,14 @@
 import jbotsim.Message;
 import jbotsim.Node;
-import jbotsim.event.ClockListener;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
-public class BaseStation extends Node implements ClockListener {
-    int minBattery = 70;
-    int default_clock = 200;
-    int top_clock;
-    Boolean setHorizontal = true;
-    ArrayList<BatteryState> sensorLowBattery;
-    ArrayList<Node> listNode1;
-    ArrayList<Node> listNode2;
+
+public class BaseStation extends Node{
+
+    private ArrayList<BatteryState> listNode1 = new ArrayList<>();
+    private ArrayList<BatteryState> listNode2 = new ArrayList<>();
 
     Robot[] listRobot = null;
 
@@ -23,96 +18,54 @@ public class BaseStation extends Node implements ClockListener {
         setSize(12);
 
         // Initiates tree construction with an empty message
+        System.out.println("START");
         sendAll(new Message(null, "INIT"));
-        top_clock = 0;
-        sensorLowBattery = new ArrayList<>();
-        robotToBase(default_clock);
-    }
-
-    @Override
-    public void onClock() {
-        if(++top_clock == default_clock || top_clock == 0) {
-            top_clock = default_clock;
-
-            System.out.println("Bat init");
-            sendAll(new Message(null, "BAT_INIT"));
-
-            System.out.println("detection type");
-            detectLocationType();
-
-            System.out.println("Sort destination");
-            sortDependingLocation();
-
-            System.out.println("Send destination");
-            sendLocationToRobot();
-
-
-            top_clock = 1;
-        }
-    }
-
-    public void addRobot(Robot[] robots) {
-        listRobot = robots;
     }
 
     @Override
     public void onMessage(Message message) {
         if(message.getFlag().equals("BAT")){
             BatteryState batMSG = (BatteryState) message.getContent();
-            if(batMSG.getBattery() <= minBattery)
-                sensorLowBattery.add(batMSG);
-        }
-    }
-
-    public void detectLocationType(){
-        for (int i = 0; i < sensorLowBattery.size(); i++) {
-            double x = sensorLowBattery.get(i).getX();
-            double y = sensorLowBattery.get(i).getY();
-            if(x - y >= 0)
-                setHorizontal = false;
-            else{
-                setHorizontal = true;
+            Node node = new Node();
+            node.setLocation(batMSG.getX(), batMSG.getY());
+            if(listRobot[0].distance(node) < listRobot[1].distance(node)) {
+                listNode1.add(batMSG);
+            }
+            else if(listRobot[0].distance(node) >= listRobot[1].distance(node)) {
+                listNode2.add(batMSG);
             }
         }
     }
 
-    public void sortDependingLocation(){
-        if(setHorizontal){
-            Collections.sort(sensorLowBattery, new Comparator<BatteryState>() {
-                @Override
-                public int compare(BatteryState b1, BatteryState b2) {
-                    return Double.compare(b1.getY(), b2.getY());
-                }
-            });
-        }
-        else{
-            Collections.sort(sensorLowBattery, new Comparator<BatteryState>() {
-                @Override
-                public int compare(BatteryState b1, BatteryState b2) {
-                    return Double.compare(b1.getX(), b2.getX());
-                }
-            });
-        }
+    public void setListRobot(Robot[] robots){
+        listRobot = robots;
     }
 
-
-    public void robotToBase(int default_clock){
-        send(listRobot[0], new Message(default_clock,"BASE"));
-        send(listRobot[1], new Message(default_clock,"BASE"));
+    public ArrayList<BatteryState> getList(int id){
+        if(id == 0)
+            return listNode1;
+        else
+            return listNode2;
     }
 
-    public void sendLocationToRobot(){
-        int size = sensorLowBattery.size();
-        Node node = new Node();
-        for (int i = 0; i < size; i++) {
-            node.setLocation(sensorLowBattery.get(i).getX(),sensorLowBattery.get(i).getY());
-            if(i <= size/2)
-                listNode1.add(node);
-            else
-                listNode2.add(node);
+    @Override
+    public void onSensingIn(Node robot) {
+        if (robot instanceof Robot) {
+            ArrayList<BatteryState> list = getList(((Robot) robot).getIdRobot());
+            Collections.sort(list, new Comparator<BatteryState>() {
+                @Override
+                public int compare(BatteryState b1, BatteryState b2) {
+                    Node node1 = new Node();
+                    node1.setLocation(b1.getX(), b1.getY());
+                    Node node2 = new Node();
+                    node2.setLocation(b2.getX(), b2.getY());
+                    return Double.compare(robot.distance(node1), robot.distance(node2));
+                }
+            });
+            while (!list.isEmpty()) {
+                BatteryState b = list.remove(0);
+                ((Robot)robot).addDestination(b.getX(), b.getY());
+            }
         }
-        send(listRobot[0], new Message(listNode1, "GOTO"));
-        send(listRobot[0], new Message(listNode2, "GOTO"));
-        sensorLowBattery.clear();
     }
 }
