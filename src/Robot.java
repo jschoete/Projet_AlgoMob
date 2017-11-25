@@ -1,4 +1,7 @@
+import jbotsim.Message;
 import jbotsim.Node;
+
+import java.util.ArrayList;
 
 public class Robot extends WaypointNode {
     int idR;
@@ -13,9 +16,27 @@ public class Robot extends WaypointNode {
     public void onStart() {
         setIcon("src/robot.png"); // to be adapted
         setSensingRange(30);
-        //addDestination(base_x, base_y);
-        addDestination(Math.random()*600, Math.random()*400);
+        addDestination(base_x, base_y);
         onArrival();
+    }
+
+    @Override
+    public void onMessage(Message message) {
+        if (message.getFlag().equals("LIST")) {
+            ArrayList<BatteryState> list = (ArrayList<BatteryState>) message.getContent();
+            if(!list.isEmpty())
+                while (!list.isEmpty()) {
+                    BatteryState b = list.remove(0);
+                    this.addDestination(b.getX(), b.getY());
+                }
+            else {
+                for (int i = idR+1; i < message.getSender().getNeighbors().size() - 1; i += 2) {
+                    addDestination(message.getSender().getNeighbors().get(i).getX(),
+                            message.getSender().getNeighbors().get(i).getY());
+                }
+
+            }
+        }
     }
 
     @Override
@@ -23,10 +44,12 @@ public class Robot extends WaypointNode {
         if (node instanceof Sensor) {
             ((Sensor) node).battery = 255;
         }
+        if(node instanceof BaseStation){
+            send(node, new Message(null, "SEND_LIST"));
+        }
     }
 
     @Override
     public void onArrival() {
-
     }
 }

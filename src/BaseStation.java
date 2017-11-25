@@ -10,8 +10,10 @@ public class BaseStation extends Node{
     private ArrayList<BatteryState> listNode1 = new ArrayList<>();
     private ArrayList<BatteryState> listNode2 = new ArrayList<>();
 
-    Robot[] listRobot = null;
+    ArrayList[] Tab_list = {listNode1,listNode2};
 
+    Robot[] listRobot = null;
+    int nb_message = 0;
     @Override
     public void onStart() {
         setIcon("src/server.png"); // to be adapted
@@ -29,29 +31,23 @@ public class BaseStation extends Node{
             Node node = new Node();
             node.setLocation(batMSG.getX(), batMSG.getY());
             if(listRobot[0].distance(node) < listRobot[1].distance(node)) {
-                listNode1.add(batMSG);
+                Tab_list[0].add(batMSG);
             }
-            else if(listRobot[0].distance(node) >= listRobot[1].distance(node)) {
-                listNode2.add(batMSG);
+            else if(listRobot[0].distance(node) > listRobot[1].distance(node)) {
+                Tab_list[1].add(batMSG);
+            }
+            else{
+                if(nb_message%2 == 0)
+                    Tab_list[0].add(batMSG);
+                else
+                    Tab_list[1].add(batMSG);
+                nb_message++;
             }
         }
-    }
-
-    public void setListRobot(Robot[] robots){
-        listRobot = robots;
-    }
-
-    public ArrayList<BatteryState> getList(int id){
-        if(id == 0)
-            return listNode1;
-        else
-            return listNode2;
-    }
-
-    @Override
-    public void onSensingIn(Node robot) {
-        if (robot instanceof Robot) {
-            ArrayList<BatteryState> list = getList(((Robot) robot).getIdRobot());
+        if(message.getFlag().equals("SEND_LIST")){
+            nb_message = 0;
+            Robot robot = (Robot) message.getSender();
+                ArrayList<BatteryState> list = getList(robot.getIdRobot());
             Collections.sort(list, new Comparator<BatteryState>() {
                 @Override
                 public int compare(BatteryState b1, BatteryState b2) {
@@ -62,10 +58,17 @@ public class BaseStation extends Node{
                     return Double.compare(robot.distance(node1), robot.distance(node2));
                 }
             });
-            while (!list.isEmpty()) {
-                BatteryState b = list.remove(0);
-                ((Robot)robot).addDestination(b.getX(), b.getY());
-            }
+            send(robot, new Message(list, "LIST"));
         }
+
+
+    }
+
+    public void setListRobot(Robot[] robots){
+        listRobot = robots;
+    }
+
+    public ArrayList<BatteryState> getList(int id){
+        return Tab_list[id];
     }
 }
