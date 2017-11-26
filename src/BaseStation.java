@@ -42,11 +42,11 @@ public class BaseStation extends Node{
     }
 
     private ArrayList tri(){
-        int size = listNode_.size()/2 - listNode_.size()/5;
+        int size = listNode_.size()/3;
         int start = 0;
 
         if(nb_robot_detect >= 2 ) {
-            start = size - (size/4);
+            start = size;
             size = listNode_.size();
         }
         for (int i = start; i < size; i++) {
