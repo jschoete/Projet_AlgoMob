@@ -4,12 +4,15 @@ import java.util.ArrayList;
 
 public class Robot extends WaypointNode {
     int idR;
+    Boolean onStart = true;
+    ArrayList<Node> list_node = new ArrayList<>();
     public void setIdRobot(int id) {
         this.idR = id;
     }
     public int getIdRobot() {
         return idR;
     }
+
 
     @Override
     public void onStart() {
@@ -22,19 +25,7 @@ public class Robot extends WaypointNode {
     @Override
     public void onMessage(Message message) {
         if (message.getFlag().equals("LIST")) {
-            ArrayList<BatteryState> list = (ArrayList<BatteryState>) message.getContent();
-            if(!list.isEmpty())
-                while (!list.isEmpty()) {
-                    BatteryState b = list.remove(0);
-                    this.addDestination(b.getX(), b.getY());
-                }
-            else {
-                for (int i = idR; i < message.getSender().getNeighbors().size() - 1; i += 2) {
-                    addDestination(message.getSender().getNeighbors().get(i).getX(),
-                            message.getSender().getNeighbors().get(i).getY());
-                }
-
-            }
+            list_node.addAll((ArrayList<Node>)message.getContent());
         }
     }
 
@@ -43,12 +34,25 @@ public class Robot extends WaypointNode {
         if (node instanceof Sensor) {
             ((Sensor) node).battery = 255;
         }
-        if(node instanceof BaseStation){
-            send(node, new Message(destinations, "SEND_LIST"));
+        if(node instanceof BaseStation && onStart){
+            send(node, new Message(null, "SEND_LIST"));
+//            for (int i = idR; i < node.getNeighbors().size(); i+=2) {
+//                this.addDestination(node.getNeighbors().get(i).getX(),node.getNeighbors().get(i).getY());
+//            }
+            onStart = false;
         }
+
     }
 
     @Override
     public void onArrival() {
+        if(!destinations.isEmpty() && !onStart){
+            destinations.poll();
+        }
+        if(destinations.isEmpty() && !onStart) {
+            for (Node aList_node : list_node) {
+                this.addDestination(aList_node.getX(), aList_node.getY());
+            }
+        }
     }
 }

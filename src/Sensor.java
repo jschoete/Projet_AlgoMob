@@ -6,7 +6,6 @@ import java.awt.*;
 public class Sensor extends Node {
     Node parent = null;
     int battery = 255;
-    int minBattery = 100;
 
     @Override
     public void onMessage(Message message) {
@@ -21,6 +20,10 @@ public class Sensor extends Node {
                 getCommonLinkWith(parent).setWidth(4);
                 // propagate further
                 sendAll(message);
+
+                Node node = new Node();
+                node.setLocation(this.getX(), this.getY());
+                send(parent, new Message(node, "BAT"));
             }
         } else if (message.getFlag().equals("SENSING")) {
             // retransmit up the tree
@@ -36,6 +39,8 @@ public class Sensor extends Node {
         if (battery > 0) {
             super.send(destination, message);
             battery--;
+            if(battery == 0)
+                System.out.println("Battery = 0 !!!!");
             updateColor();
         }
     }
@@ -47,10 +52,6 @@ public class Sensor extends Node {
                 double sensedValue = Math.random(); // sense a value
                 send(parent, new Message(sensedValue, "SENSING")); // send it to parent
             }
-        }
-        if(battery <= minBattery){
-            BatteryState batteryState = new BatteryState(this.getX(), this.getY(), this.battery);
-            send(parent, new Message(batteryState, "BAT"));
         }
     }
 

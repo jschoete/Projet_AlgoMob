@@ -5,50 +5,54 @@ import java.util.ArrayList;
 
 public class BaseStation extends Node{
 
-    private ArrayList<BatteryState> listNode1 = new ArrayList<>();
-    private ArrayList<BatteryState> listNode2 = new ArrayList<>();
+    private ArrayList<Node> listNode1 = new ArrayList<>();
+    private ArrayList<Node> listNode2 = new ArrayList<>();
+    private ArrayList<Node> listNode_ = new ArrayList<>();
 
-    ArrayList[] Tab_list = {listNode1,listNode2};
+    private ArrayList[] Tab_list = {listNode1,listNode2};
 
-    Robot[] listRobot = null;
-    int nb_message = 0;
+    Boolean ret = true;
+    int nb_robot_detect = 0;
+
     @Override
     public void onStart() {
         setIcon("src/server.png"); // to be adapted
         setSize(12);
 
         // Initiates tree construction with an empty message
-        System.out.println("START");
         sendAll(new Message(null, "INIT"));
     }
 
     @Override
     public void onMessage(Message message) {
         if(message.getFlag().equals("BAT")){
-            BatteryState batMSG = (BatteryState) message.getContent();
-            Node node = new Node();
-            node.setLocation(batMSG.getX(), batMSG.getY());
-                if(nb_message%2 == 0)
-                    Tab_list[0].add(batMSG);
-                else
-                    Tab_list[1].add(batMSG);
-                nb_message++;
+            if(!listNode_.contains(message.getContent()))
+                listNode_.add((Node) message.getContent());
         }
         if(message.getFlag().equals("SEND_LIST")){
-            nb_message = 0;
-            Robot robot = (Robot) message.getSender();
-            ArrayList<BatteryState> list = getList(robot.getIdRobot());
-            send(robot, new Message(list, "LIST"));
+            if(nb_robot_detect <= 2) {
+                nb_robot_detect++;
+                ArrayList<Node> list = new ArrayList<>();
+                list.addAll(tri());
+                if(listNode1.size() !=0 || listNode2.size() != 0)
+                    send(message.getSender(), new Message(list, "LIST"));
+            }
         }
 
-
     }
 
-    public void setListRobot(Robot[] robots){
-        listRobot = robots;
-    }
+    private ArrayList tri(){
+        int size = listNode_.size()/2 - listNode_.size()/5;
+        int start = 0;
 
-    public ArrayList getList(int id){
-        return Tab_list[id];
+        if(nb_robot_detect >= 2 ) {
+            start = size - (size/4);
+            size = listNode_.size();
+        }
+        for (int i = start; i < size; i++) {
+            Tab_list[nb_robot_detect - 1].add(listNode_.get(i));
+        }
+
+        return Tab_list[nb_robot_detect - 1];
     }
 }
