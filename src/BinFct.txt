@@ -1,0 +1,51 @@
+import java.util.Collections;
+import java.util.Comparator;
+
+public class BinFct {
+
+    public void detectLocationType(){
+        for (int i = 0; i < sensorLowBattery.size(); i++) {
+            double x = sensorLowBattery.get(i).getX();
+            double y = sensorLowBattery.get(i).getY();
+            if(x - y >= 0)
+                setHorizontal = false;
+            else{
+                setHorizontal = true;
+            }
+        }
+    }
+
+    public void sortDependingLocation(){
+        if(setHorizontal){
+            Collections.sort(sensorLowBattery, new Comparator<BatteryState>() {
+                @Override
+                public int compare(BatteryState b1, BatteryState b2) {
+                    return Double.compare(b1.getY(), b2.getY());
+                }
+            });
+        }
+
+
+
+        Collections.sort(listNode1, new Comparator<BatteryState>() {
+                            @Override
+                            public int compare(BatteryState b1, BatteryState b2) {
+                                return Double.compare(b1.getY(), b2.getY());
+                            }
+                        });
+
+
+
+
+        else{
+            Collections.sort(sensorLowBattery, new Comparator<BatteryState>() {
+                @Override
+                public int compare(BatteryState b1, BatteryState b2) {
+                    return Double.compare(b1.getX(), b2.getX());
+                }
+            });
+        }
+    }
+
+}
+
