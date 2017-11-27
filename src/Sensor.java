@@ -6,7 +6,7 @@ import java.awt.*;
 public class Sensor extends Node {
     Node parent = null;
     int battery = 255;
-
+    Boolean isbattery = false;
     @Override
     public void onMessage(Message message) {
         // "INIT" flag : construction of the spanning tree
@@ -40,8 +40,10 @@ public class Sensor extends Node {
         if (battery > 0) {
             super.send(destination, message);
             battery--;
-            if(battery == 0)
-                System.out.println("Battery = 0 !!!!");
+            if(battery == 0 && !isbattery) {
+                System.out.println("Battery = 0 !!!!" + getTime());
+                isbattery = true;
+            }
             updateColor();
         }
     }
