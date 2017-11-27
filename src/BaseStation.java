@@ -1,8 +1,9 @@
-import javafx.scene.control.Tab;
 import jbotsim.Message;
 import jbotsim.Node;
-import java.util.ArrayList;
 
+import java.awt.geom.Point2D;
+import java.util.ArrayList;
+import java.util.List;
 
 public class BaseStation extends Node{
 
@@ -12,7 +13,6 @@ public class BaseStation extends Node{
 
     private ArrayList[] Tab_list = {listNode1,listNode2};
 
-    Boolean ret = true;
     int nb_robot_detect = 0;
 
     @Override
@@ -43,29 +43,52 @@ public class BaseStation extends Node{
     }
 
     private ArrayList tri(){
-        int size = listNode_.size()/2;
         int start = 0;
+        int size = listNode_.size()/3;
 
         if(nb_robot_detect >= 2 ) {
             start = size;
             size = listNode_.size();
-        }
-        for (int i = start; i < size; i++) {
-            Tab_list[nb_robot_detect - 1].add(listNode_.get(i));
-        }
-
-        for (int j = 0; j < Tab_list.length - 1; j++) {
-            int nb_node = Tab_list[j].size();
-            int max = ((Node)Tab_list[j].get(0)).getID();
-            for (int i = 0; i < nb_node; i++) {
-                System.out.println("color === "+ ((Node) Tab_list[j].get(i)).getID()+"              id ===  "+i);
-                if(max < ((Node)Tab_list[j].get(i)).getID()){
-                    max = ((Node)Tab_list[j].get(i)).getID();
-                    Tab_list[j].add(Tab_list[j].remove(i));
+            for (int j = 0; j < 3; j++) {
+                for (int i = start; i < size - size/5; i++) {
+                    Tab_list[nb_robot_detect - 1].add(listNode_.get(i));
                 }
             }
         }
 
+        for (int i = start; i < size; i++) {
+            Tab_list[nb_robot_detect - 1].add(listNode_.get(i));
+        }
+
+
         return Tab_list[nb_robot_detect - 1];
     }
+
+
+/*
+    public List<Point2D> getItinerary() {
+        List<Point2D> solution = new ArrayList<>();
+        List<Point2D> stack = new ArrayList<>(this.points);
+        if (!stack.isEmpty()) {
+            // set first destination
+            solution.add(stack.remove(0));
+
+            // search nearest neighbors and add them to list
+            while (!stack.isEmpty()) {
+                double min = Double.MAX_VALUE;
+                int minIndex = 0;
+                for (int i = 0; i < stack.size(); i++) {
+                    double dist = stack.get(i).distance(solution.get(solution.size() - 1));
+                    if (min > dist) {
+                        min = dist;
+                        minIndex = i;
+                    }
+                }
+                solution.add(stack.remove(minIndex));
+            }
+        }
+        return solution;
+    }
+*/
+
 }

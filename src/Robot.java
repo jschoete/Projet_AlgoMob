@@ -9,9 +9,6 @@ public class Robot extends WaypointNode {
     public void setIdRobot(int id) {
         this.idR = id;
     }
-    public int getIdRobot() {
-        return idR;
-    }
 
 
     @Override
@@ -36,9 +33,6 @@ public class Robot extends WaypointNode {
         }
         if(node instanceof BaseStation && onStart){
             send(node, new Message(null, "SEND_LIST"));
-//            for (int i = idR; i < node.getNeighbors().size(); i+=2) {
-//                this.addDestination(node.getNeighbors().get(i).getX(),node.getNeighbors().get(i).getY());
-//            }
             onStart = false;
         }
 
