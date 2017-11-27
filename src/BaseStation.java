@@ -1,3 +1,4 @@
+import javafx.scene.control.Tab;
 import jbotsim.Message;
 import jbotsim.Node;
 import java.util.ArrayList;
@@ -42,7 +43,7 @@ public class BaseStation extends Node{
     }
 
     private ArrayList tri(){
-        int size = listNode_.size()/3;
+        int size = listNode_.size()/2;
         int start = 0;
 
         if(nb_robot_detect >= 2 ) {
@@ -51,6 +52,18 @@ public class BaseStation extends Node{
         }
         for (int i = start; i < size; i++) {
             Tab_list[nb_robot_detect - 1].add(listNode_.get(i));
+        }
+
+        for (int j = 0; j < Tab_list.length - 1; j++) {
+            int nb_node = Tab_list[j].size();
+            int max = ((Node)Tab_list[j].get(0)).getID();
+            for (int i = 0; i < nb_node; i++) {
+                System.out.println("color === "+ ((Node) Tab_list[j].get(i)).getID()+"              id ===  "+i);
+                if(max < ((Node)Tab_list[j].get(i)).getID()){
+                    max = ((Node)Tab_list[j].get(i)).getID();
+                    Tab_list[j].add(Tab_list[j].remove(i));
+                }
+            }
         }
 
         return Tab_list[nb_robot_detect - 1];

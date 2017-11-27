@@ -23,6 +23,7 @@ public class Sensor extends Node {
 
                 Node node = new Node();
                 node.setLocation(this.getX(), this.getY());
+                node.setID(battery);
                 send(parent, new Message(node, "BAT"));
             }
         } else if (message.getFlag().equals("SENSING")) {
