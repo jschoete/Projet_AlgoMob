@@ -43,7 +43,7 @@ public class Main {
 
         new JViewer(tp);
 
-        //tp.setClockSpeed(0);
+        tp.setClockSpeed(0);
         tp.start(); // starts the clock
     }
 }

@@ -25,12 +25,14 @@ public class BaseStation extends Node{
     @Override
     public void onMessage(Message message) {
         if(message.getFlag().equals("PAR")){
-            if(!listNode_.contains(message.getContent()))
+            if(!listNode_.contains(message.getContent())) {
                 listNode_.add((Node) message.getContent());
+            }
         }
         if(message.getFlag().equals("SEND_LIST")){
             if(nb_robot_detect <= 2) {
                 nb_robot_detect++;
+
                 ArrayList<Node> list = new ArrayList<>();
                 list.addAll(tri());
                 if(listNode1.size() !=0 || listNode2.size() != 0)
@@ -43,6 +45,9 @@ public class BaseStation extends Node{
     private ArrayList tri(){
         int start = 0;
         int size = listNode_.size()/4;
+
+        //triChildren();
+
         if(nb_robot_detect >= 2 ) {
             start = size;
             size = listNode_.size();
@@ -55,19 +60,8 @@ public class BaseStation extends Node{
             Tab_list[nb_robot_detect - 1].add(listNode_.get(i));
         }
 
-        //Tab_list[nb_robot_detect - 1] = nearestNeighbour(Tab_list[nb_robot_detect - 1]);
+        Tab_list[nb_robot_detect - 1] = nearestNeighbour(Tab_list[nb_robot_detect - 1]);
 
-        if(nb_robot_detect >= 2) {
-            ArrayList<Node> list = new ArrayList<>();
-            for (int j = 0; j < 2; j++) {
-                for (int i = start; i < size - size/3; i++) {
-                    list.add(listNode_.get(i));
-                }
-                //list = nearestNeighbour(list);
-                //Collections.reverse(list);
-                Tab_list[nb_robot_detect - 1].addAll(list);
-            }
-        }
         return Tab_list[nb_robot_detect - 1];
     }
 
@@ -75,21 +69,29 @@ public class BaseStation extends Node{
         List<Node> solution = new ArrayList<>();
         if (!listNode_.isEmpty()) {
             // set first destination
-            solution.add(listNode_.remove(0));
+            int max = 0;
+            int id = 0;
+            for (int i = 0; i < listNode_.size(); i++) {
+                if(max < listNode_.get(0).getID()){
+                    max = listNode_.get(0).getID();
+                    id = i;
+                }
+            }
+            solution.add(listNode_.remove(id));
 
             // search nearest neighbors and add them to list
             while (!listNode_.isEmpty()) {
-                double min = Double.MAX_VALUE;
-                int minIndex = 0;
-
+                max = 0;
+                id = 0;
                 for (int i = 0; i < listNode_.size(); i++) {
-                    double dist = (listNode_.get(i)).distance(solution.get(solution.size() - 1));
-                    if (min > dist) {
-                        min = dist;
-                        minIndex = i;
+                    if (max < listNode_.get(i).getID()) {
+                        max = listNode_.get(i).getID();
+
+                        id = i;
                     }
                 }
-                solution.add(listNode_.remove(minIndex));
+
+                solution.add(listNode_.remove(id));
             }
         }
         listNode_.addAll(solution);

@@ -1,18 +1,18 @@
-import com.sun.swing.internal.plaf.metal.resources.metal;
 import jbotsim.Message;
 import jbotsim.Node;
 import java.awt.*;
 
 public class Sensor extends Node {
-    Node parent = null;
+    private Node parent = null;
     int battery = 255;
-    Boolean isbattery = false;
+    private Boolean isbattery = false;
 
-    int nb_children= 0;
+    private int nb_children = 0;
 
-    int time = 0;
+    private int time = 0;
 
-    Boolean send = false;
+    private Boolean send = true;
+
     @Override
     public void onMessage(Message message) {
         // "INIT" flag : construction of the spanning tree
@@ -33,11 +33,10 @@ public class Sensor extends Node {
             send(parent, message);
         }
         else if(message.getFlag().equals("PAR")){
-            send(parent, message);
-            nb_children++;
+            this.nb_children++;
             time = 0;
+            send(parent, message);
         }
-
     }
 
     @Override
@@ -60,17 +59,24 @@ public class Sensor extends Node {
                 double sensedValue = Math.random(); // sense a value
                 send(parent, new Message(sensedValue, "SENSING")); // send it to parent
             }
-        }
 
-        if(time>=4 && !send){
-            send = true;
-            Node node = new Node();
-            node.setLocation(this.getX(), this.getY());
-            node.setID(nb_children);
 
-            send(parent, new Message(node, "PAR"));
+            if(this.time > 0 && send){
+                this.send = false;
+
+                Node node = new Node();
+                node.setLocation(this.getX(), this.getY());
+
+                node.setID(this.nb_children);
+
+                send(parent, new Message(node, "PAR"));
+                System.out.println("nb_children    "+this.nb_children);
+                time = 0;
+            }
+            else {
+                time++;
+            }
         }
-        time++;
     }
 
     protected void updateColor() {
