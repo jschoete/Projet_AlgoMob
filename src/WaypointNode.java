@@ -1,9 +1,11 @@
 import jbotsim.Node;
+import jbotsim.event.ClockListener;
+
 import java.awt.geom.Point2D;
 import java.util.*;
 
-public class WaypointNode extends Node{
-
+public class WaypointNode extends Node implements ClockListener{
+    int time = 0;
     Queue<Point2D> destinations = new LinkedList<>();
     double speed = 1;
 
@@ -36,7 +38,7 @@ public class WaypointNode extends Node{
                 onArrival();
             }
         }
-
+        time++;
     }
 
 

@@ -1,12 +1,18 @@
+import com.sun.swing.internal.plaf.metal.resources.metal;
 import jbotsim.Message;
 import jbotsim.Node;
-
 import java.awt.*;
 
 public class Sensor extends Node {
     Node parent = null;
     int battery = 255;
     Boolean isbattery = false;
+
+    int nb_children= 0;
+
+    int time = 0;
+
+    Boolean send = false;
     @Override
     public void onMessage(Message message) {
         // "INIT" flag : construction of the spanning tree
@@ -20,19 +26,18 @@ public class Sensor extends Node {
                 getCommonLinkWith(parent).setWidth(4);
                 // propagate further
                 sendAll(message);
-
-                Node node = new Node();
-                node.setLocation(this.getX(), this.getY());
-                node.setID(battery);
-                send(parent, new Message(node, "BAT"));
+                //send(parent, new Message(node, "BAT"));
             }
         } else if (message.getFlag().equals("SENSING")) {
             // retransmit up the tree
             send(parent, message);
         }
-        else if(message.getFlag().equals("BAT")){
+        else if(message.getFlag().equals("PAR")){
             send(parent, message);
+            nb_children++;
+            time = 0;
         }
+
     }
 
     @Override
@@ -56,6 +61,16 @@ public class Sensor extends Node {
                 send(parent, new Message(sensedValue, "SENSING")); // send it to parent
             }
         }
+
+        if(time>=4 && !send){
+            send = true;
+            Node node = new Node();
+            node.setLocation(this.getX(), this.getY());
+            node.setID(nb_children);
+
+            send(parent, new Message(node, "PAR"));
+        }
+        time++;
     }
 
     protected void updateColor() {

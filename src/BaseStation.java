@@ -1,11 +1,6 @@
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import jbotsim.Message;
 import jbotsim.Node;
-
-import java.awt.geom.Point2D;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 public class BaseStation extends Node{
@@ -29,7 +24,7 @@ public class BaseStation extends Node{
 
     @Override
     public void onMessage(Message message) {
-        if(message.getFlag().equals("BAT")){
+        if(message.getFlag().equals("PAR")){
             if(!listNode_.contains(message.getContent()))
                 listNode_.add((Node) message.getContent());
         }
@@ -48,7 +43,6 @@ public class BaseStation extends Node{
     private ArrayList tri(){
         int start = 0;
         int size = listNode_.size()/4;
-
         if(nb_robot_detect >= 2 ) {
             start = size;
             size = listNode_.size();
@@ -61,7 +55,7 @@ public class BaseStation extends Node{
             Tab_list[nb_robot_detect - 1].add(listNode_.get(i));
         }
 
-        Tab_list[nb_robot_detect - 1] = nearestNeighbour(Tab_list[nb_robot_detect - 1]);
+        //Tab_list[nb_robot_detect - 1] = nearestNeighbour(Tab_list[nb_robot_detect - 1]);
 
         if(nb_robot_detect >= 2) {
             ArrayList<Node> list = new ArrayList<>();
@@ -69,21 +63,42 @@ public class BaseStation extends Node{
                 for (int i = start; i < size - size/3; i++) {
                     list.add(listNode_.get(i));
                 }
-                list = nearestNeighbour(list);
+                //list = nearestNeighbour(list);
                 //Collections.reverse(list);
                 Tab_list[nb_robot_detect - 1].addAll(list);
             }
-
-
         }
-
-
         return Tab_list[nb_robot_detect - 1];
     }
 
+    public void triChildren(){
+        List<Node> solution = new ArrayList<>();
+        if (!listNode_.isEmpty()) {
+            // set first destination
+            solution.add(listNode_.remove(0));
+
+            // search nearest neighbors and add them to list
+            while (!listNode_.isEmpty()) {
+                double min = Double.MAX_VALUE;
+                int minIndex = 0;
+
+                for (int i = 0; i < listNode_.size(); i++) {
+                    double dist = (listNode_.get(i)).distance(solution.get(solution.size() - 1));
+                    if (min > dist) {
+                        min = dist;
+                        minIndex = i;
+                    }
+                }
+                solution.add(listNode_.remove(minIndex));
+            }
+        }
+        listNode_.addAll(solution);
+
+    }
 
 
     public ArrayList nearestNeighbour(ArrayList<Node> list) {
+        //la grande liste
         List<Node> solution = new ArrayList<>();
         if (!list.isEmpty()) {
             // set first destination
@@ -105,7 +120,6 @@ public class BaseStation extends Node{
         }
         list.addAll(solution);
         return list;
-
     }
 
 

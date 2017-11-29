@@ -42,6 +42,8 @@ public class Main {
         tp.addNode(60, 80, robot2);
 
         new JViewer(tp);
+
+        //tp.setClockSpeed(0);
         tp.start(); // starts the clock
     }
 }
