@@ -44,7 +44,7 @@ public class Sensor extends Node {
         if (battery > 0) {
             super.send(destination, message);
             battery--;
-            if(battery == 0){// && !isbattery) {
+            if(battery == 0){
                 System.out.println("Battery = 0 !!!!" + getTime()+" "+this.getID());
                 isbattery = true;
             }
