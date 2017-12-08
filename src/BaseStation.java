@@ -44,12 +44,12 @@ public class BaseStation extends Node{
 
     private ArrayList tri(){
         int start = 0;
-        int size = listNode_.size()/4;
+        int size = listNode_.size()/4 + 1;
 
         //triChildren();
 
         if(nb_robot_detect >= 2 ) {
-            start = size;
+            start = size - 2;
             size = listNode_.size();
             for (int i = start; i < size; i++) {
                 Tab_list[nb_robot_detect - 1].add(listNode_.get(i));

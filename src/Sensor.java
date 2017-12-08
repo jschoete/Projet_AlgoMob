@@ -44,8 +44,8 @@ public class Sensor extends Node {
         if (battery > 0) {
             super.send(destination, message);
             battery--;
-            if(battery == 0 && !isbattery) {
-                System.out.println("Battery = 0 !!!!" + getTime());
+            if(battery == 0){// && !isbattery) {
+                System.out.println("Battery = 0 !!!!" + getTime()+" "+this.getID());
                 isbattery = true;
             }
             updateColor();
@@ -70,7 +70,7 @@ public class Sensor extends Node {
                 node.setID(this.nb_children);
 
                 send(parent, new Message(node, "PAR"));
-                System.out.println("nb_children    "+this.nb_children);
+                //System.out.println("nb_children    "+this.nb_children);
                 time = 0;
             }
             else {
