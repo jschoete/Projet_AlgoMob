@@ -13,6 +13,8 @@ public class BaseStation extends Node{
 
     int nb_robot_detect = 0;
 
+
+
     @Override
     public void onStart() {
         setIcon("src/server.png"); // to be adapted
@@ -24,7 +26,7 @@ public class BaseStation extends Node{
 
     @Override
     public void onMessage(Message message) {
-        if(message.getFlag().equals("PAR")){
+        if(message.getFlag().equals("CHILD")){
             if(!listNode_.contains(message.getContent())) {
                 listNode_.add((Node) message.getContent());
             }
@@ -35,6 +37,7 @@ public class BaseStation extends Node{
 
                 ArrayList<Node> list = new ArrayList<>();
                 list.addAll(tri());
+                System.out.println("Size ====   "+listNode_.size());
                 if(listNode1.size() !=0 || listNode2.size() != 0)
                     send(message.getSender(), new Message(list, "LIST"));
             }

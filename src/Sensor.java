@@ -12,6 +12,8 @@ public class Sensor extends Node {
     private int time = 0;
 
     private Boolean send = true;
+    private Boolean isParent = false;
+    private Boolean isLeaf = false;
 
     @Override
     public void onMessage(Message message) {
@@ -26,15 +28,20 @@ public class Sensor extends Node {
                 getCommonLinkWith(parent).setWidth(4);
                 // propagate further
                 sendAll(message);
-                //send(parent, new Message(node, "BAT"));
+                send(parent, new Message(null, "PAR"));
             }
         } else if (message.getFlag().equals("SENSING")) {
             // retransmit up the tree
             send(parent, message);
         }
         else if(message.getFlag().equals("PAR")){
+            isParent = true;
+            isLeaf = false;
             this.nb_children++;
+            send(parent, message);
             time = 0;
+        }
+        else if(message.getFlag().equals("CHILD")){
             send(parent, message);
         }
     }
@@ -45,7 +52,7 @@ public class Sensor extends Node {
             super.send(destination, message);
             battery--;
             if(battery == 0){
-                System.out.println("Battery = 0 !!!!" + getTime()+" "+this.getID());
+                //System.out.println("Battery = 0 !!!!" + getTime()+" "+this.getID());
                 isbattery = true;
             }
             updateColor();
@@ -61,7 +68,7 @@ public class Sensor extends Node {
             }
 
 
-            if(this.time > 0 && send){
+            if(this.send && (this.isLeaf || (this.isParent && this.time > 1))){
                 this.send = false;
 
                 Node node = new Node();
@@ -69,13 +76,14 @@ public class Sensor extends Node {
 
                 node.setID(this.nb_children);
 
-                send(parent, new Message(node, "PAR"));
-                //System.out.println("nb_children    "+this.nb_children);
-                time = 0;
+                send(parent, new Message(node, "CHILD"));
+                System.out.println("nb_children    "+this.nb_children+"     ID   "+this.getID());
             }
-            else {
-                time++;
+            else if (send && !this.isParent) {
+                if(time != 0)
+                    isLeaf = true;
             }
+            time++;
         }
     }
 
