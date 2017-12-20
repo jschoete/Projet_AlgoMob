@@ -44,10 +44,11 @@ public class BaseStation extends Node{
 
     private ArrayList tri(){
         int start = 0;
-        int size = listNode_.size()/4 + 1;
+        int size = listNode_.size()/4 ;
 
-        //triChildren();
 
+        nearestNeighbour(listNode_);
+        triChildren();
         if(nb_robot_detect >= 2 ) {
             start = size - 2;
             size = listNode_.size();
@@ -60,7 +61,7 @@ public class BaseStation extends Node{
             Tab_list[nb_robot_detect - 1].add(listNode_.get(i));
         }
 
-        Tab_list[nb_robot_detect - 1] = nearestNeighbour(Tab_list[nb_robot_detect - 1]);
+
 
         return Tab_list[nb_robot_detect - 1];
     }
