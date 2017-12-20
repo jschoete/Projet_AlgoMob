@@ -55,7 +55,7 @@ public class Sensor extends Node {
             super.send(destination, message);
             battery--;
             if(battery == 0){
-                //System.out.println("Battery = 0 !!!!" + getTime()+" "+this.getID());
+                System.out.println("Battery     " + getTime()+"       "+this.getID() + "    nb_children    "+nb_children);
                 isbattery = true;
             }
             updateColor();
@@ -79,7 +79,7 @@ public class Sensor extends Node {
                 node.setID(this.nb_children);
 
                 send(parent, new Message(node, "CHILD"));
-                System.out.println("nb_children    "+this.nb_children+"     ID   "+this.getID());
+                //System.out.println("nb_children    "+this.nb_children+"     ID   "+this.getID());
             }
             else if (send && !this.isParent && !this.isLeaf) {
                 if(time > 0)

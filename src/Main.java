@@ -32,9 +32,6 @@ public class Main {
         Robot robot1 = new Robot();
         Robot robot2 = new Robot();
 
-        robot1.setIdRobot(0);
-        robot1.setIdRobot(1);
-
         robot1.setBase(baseStation);
         robot2.setBase(baseStation);
 

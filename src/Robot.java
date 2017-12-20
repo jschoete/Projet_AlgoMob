@@ -1,20 +1,10 @@
 import jbotsim.Message;
 import jbotsim.Node;
-
-import java.awt.geom.Point2D;
 import java.util.ArrayList;
-import java.util.List;
 
 public class Robot extends WaypointNode {
-    int idR;
-    Boolean onStart = true;
-    ArrayList<Node> list_node = new ArrayList<>();
-
-    public void setIdRobot(int id) {
-        this.idR = id;
-    }
-
-
+    private Boolean onStart = true;
+    private ArrayList<Node> listNode = new ArrayList<>();
 
     @Override
     public void onStart() {
@@ -28,7 +18,7 @@ public class Robot extends WaypointNode {
     @Override
     public void onMessage(Message message) {
         if (message.getFlag().equals("LIST")) {
-            list_node.addAll((ArrayList<Node>)message.getContent());
+            listNode.addAll((ArrayList<Node>)message.getContent());
             this.onStart = false;
         }
     }
@@ -50,13 +40,10 @@ public class Robot extends WaypointNode {
             destinations.poll();
         }
         if(destinations.isEmpty() && !onStart) {
-            tri();
-            for (Node aList_node : list_node) {
-                this.addDestination(aList_node.getX(), aList_node.getY());
+            for (int i = 0; i < listNode.size(); i++) {
+                addDestination(listNode.get(i).getX(),listNode.get(i).getY());
             }
         }
     }
 
-    public void tri() {
-    }
 }
