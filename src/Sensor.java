@@ -35,14 +35,17 @@ public class Sensor extends Node {
             send(parent, message);
         }
         else if(message.getFlag().equals("PAR")){
-            isParent = true;
-            isLeaf = false;
+            this.isParent = true;
+            this.isLeaf = false;
             this.nb_children++;
+            this.time = 0;
             send(parent, message);
-            time = 0;
         }
         else if(message.getFlag().equals("CHILD")){
+            this.isParent = true;
+            this.isLeaf = false;
             send(parent, message);
+            this.time = 0;
         }
     }
 
@@ -67,7 +70,6 @@ public class Sensor extends Node {
                 send(parent, new Message(sensedValue, "SENSING")); // send it to parent
             }
 
-
             if(this.send && (this.isLeaf || (this.isParent && this.time > 1))){
                 this.send = false;
 
@@ -79,8 +81,8 @@ public class Sensor extends Node {
                 send(parent, new Message(node, "CHILD"));
                 System.out.println("nb_children    "+this.nb_children+"     ID   "+this.getID());
             }
-            else if (send && !this.isParent) {
-                if(time != 0)
+            else if (send && !this.isParent && !this.isLeaf) {
+                if(time > 0)
                     isLeaf = true;
             }
             time++;

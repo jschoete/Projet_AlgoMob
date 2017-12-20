@@ -12,9 +12,10 @@ public class BaseStation extends Node{
     private ArrayList[] Tab_list = {listNode1,listNode2};
 
     int nb_robot_detect = 0;
+    int nb_sensor = 0;
+    int send = 0;
 
-
-
+    private ArrayList<Robot> listRobot = new ArrayList<>();
     @Override
     public void onStart() {
         setIcon("src/server.png"); // to be adapted
@@ -29,21 +30,19 @@ public class BaseStation extends Node{
         if(message.getFlag().equals("CHILD")){
             if(!listNode_.contains(message.getContent())) {
                 listNode_.add((Node) message.getContent());
+                nb_sensor++;
             }
         }
+
         if(message.getFlag().equals("SEND_LIST")){
-            if(nb_robot_detect <= 2) {
-                nb_robot_detect++;
+            System.out.println("ok BASE");
+            nb_robot_detect++;
+            tri();
+            send(message.getSender(), new Message(Tab_list[nb_robot_detect - 1], "LIST"));
 
-                ArrayList<Node> list = new ArrayList<>();
-                list.addAll(tri());
-                System.out.println("Size ====   "+listNode_.size());
-                if(listNode1.size() !=0 || listNode2.size() != 0)
-                    send(message.getSender(), new Message(list, "LIST"));
-            }
         }
-
     }
+
 
     private ArrayList tri(){
         int start = 0;

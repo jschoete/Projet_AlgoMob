@@ -1,5 +1,7 @@
 import jbotsim.Message;
 import jbotsim.Node;
+
+import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,23 +9,27 @@ public class Robot extends WaypointNode {
     int idR;
     Boolean onStart = true;
     ArrayList<Node> list_node = new ArrayList<>();
+
     public void setIdRobot(int id) {
         this.idR = id;
     }
+
 
 
     @Override
     public void onStart() {
         setIcon("src/robot.png"); // to be adapted
         setSensingRange(30);
+
         addDestination(base_x, base_y);
-        onArrival();
+
     }
 
     @Override
     public void onMessage(Message message) {
         if (message.getFlag().equals("LIST")) {
             list_node.addAll((ArrayList<Node>)message.getContent());
+            this.onStart = false;
         }
     }
 
@@ -34,7 +40,6 @@ public class Robot extends WaypointNode {
         }
         if(node instanceof BaseStation && onStart){
             send(node, new Message(null, "SEND_LIST"));
-            onStart = false;
         }
 
     }

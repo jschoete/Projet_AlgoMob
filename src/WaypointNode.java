@@ -11,10 +11,11 @@ public class WaypointNode extends Node implements ClockListener{
 
     double base_x;
     double base_y;
+    BaseStation base;
 
-    public void setBase(double x, double y){
-        base_x = x;
-        base_y = y;
+    public void setBase(BaseStation b){
+        base_x = b.getX();
+        base_y = b.getY();
     }
 
     public void addDestination(double x, double y){
