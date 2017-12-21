@@ -5,12 +5,8 @@ import java.awt.*;
 public class Sensor extends Node {
     private Node parent = null;
     int battery = 255;
-    private Boolean isbattery = false;
-
     private int nb_children = 0;
-
     private int time = 0;
-
     private Boolean send = true;
     private Boolean isParent = false;
     private Boolean isLeaf = false;
@@ -34,21 +30,15 @@ public class Sensor extends Node {
             // retransmit up the tree
             send(parent, message);
         }
-        else if(message.getFlag().equals("PAR")){
+        else if(message.getFlag().equals("PAR") || message.getFlag().equals("CHILD")){
             this.isParent = true;
             this.isLeaf = false;
-            this.nb_children++;
+            if(message.getFlag().equals("PAR"))
+                this.nb_children++;
             this.time = 0;
             send(parent, message);
-        }
-        else if(message.getFlag().equals("CHILD")){
-            this.isParent = true;
-            this.isLeaf = false;
-            send(parent, message);
-            this.time = 0;
         }
     }
-
     @Override
     public void send(Node destination, Message message) {
         if (battery > 0) {
@@ -56,12 +46,10 @@ public class Sensor extends Node {
             battery--;
             if(battery == 0){
                 System.out.println("Battery     " + getTime()+"       "+this.getID() + "    nb_children    "+nb_children);
-                isbattery = true;
             }
             updateColor();
         }
     }
-
     @Override
     public void onClock() {
         if (parent != null) { // if already in the tree
@@ -69,17 +57,12 @@ public class Sensor extends Node {
                 double sensedValue = Math.random(); // sense a value
                 send(parent, new Message(sensedValue, "SENSING")); // send it to parent
             }
-
             if(this.send && (this.isLeaf || (this.isParent && this.time > 1))){
                 this.send = false;
-
                 Node node = new Node();
                 node.setLocation(this.getX(), this.getY());
-
                 node.setID(this.nb_children);
-
                 send(parent, new Message(node, "CHILD"));
-                //System.out.println("nb_children    "+this.nb_children+"     ID   "+this.getID());
             }
             else if (send && !this.isParent && !this.isLeaf) {
                 if(time > 0)
@@ -88,7 +71,6 @@ public class Sensor extends Node {
             time++;
         }
     }
-
     protected void updateColor() {
         setColor(battery == 0 ? Color.red : new Color(255 - battery, 255 - battery, 255));
     }
