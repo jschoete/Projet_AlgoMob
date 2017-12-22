@@ -9,7 +9,6 @@ public class WaypointNode extends Node implements ClockListener{
     double speed = 1;
     double base_x;
     double base_y;
-    BaseStation base;
 
     public void setBase(BaseStation b){
         base_x = b.getX();
@@ -18,9 +17,7 @@ public class WaypointNode extends Node implements ClockListener{
     public void addDestination(double x, double y){
        destinations.add(new Point2D.Double(x, y));
     }
-    public void setSpeed(double speed) {
-        this.speed = speed;
-    }
+    public void setSpeed(double speed) {this.speed = speed;}
     @Override
     public void onClock() {
         if (!destinations.isEmpty()) {
@@ -30,7 +27,6 @@ public class WaypointNode extends Node implements ClockListener{
                 move(speed);
             } else {
                 setLocation(dest);
-                //destinations.poll();
                 onArrival();
             }
         }

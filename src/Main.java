@@ -23,22 +23,21 @@ public class Main {
         // Add sensors
         tp.setDefaultNodeModel(Sensor.class);
         tp.fromFile("src/sensors.tp"); // to be adapted
-        int nbSensor = tp.getNodes().size();
-
         // Add base station
         BaseStation baseStation = new BaseStation();
-        baseStation.setNumberSensor(nbSensor);
         tp.addNode(100, 80, baseStation);
 
         // Add two robots
         Robot robot1 = new Robot();
         Robot robot2 = new Robot();
+        Robot robot3 = new Robot();
 
         robot1.setBase(baseStation);
         robot2.setBase(baseStation);
 
         tp.addNode(90, 40, robot1);
         tp.addNode(60, 80, robot2);
+        tp.addNode(460, 80, robot3);
 
         new JViewer(tp);
 
