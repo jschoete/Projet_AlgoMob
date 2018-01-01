@@ -1,6 +1,7 @@
 import jbotsim.Message;
 import jbotsim.Node;
 import java.util.ArrayList;
+import java.util.List;
 
 public class Robot extends WaypointNode {
     int idR;
@@ -44,9 +45,13 @@ public class Robot extends WaypointNode {
             destinations.poll();
         }
         if(destinations.isEmpty() && !onStart) {
+            tri();
             for (Node aList_node : list_node) {
                 this.addDestination(aList_node.getX(), aList_node.getY());
             }
         }
+    }
+
+    public void tri() {
     }
 }
