@@ -9,9 +9,9 @@ public class BaseStation extends Node{
     private ArrayList<Node> listNode2 = new ArrayList<>();
     private ArrayList<Node> listNode_ = new ArrayList<>();
 
-    private ArrayList[] Tab_list = {listNode1,listNode2};
+    private ArrayList[] tabList = {listNode1,listNode2};
 
-    int nb_robot_detect = 0;
+    int nbRobot = 0;
 
     @Override
     public void onStart() {
@@ -30,8 +30,8 @@ public class BaseStation extends Node{
             }
         }
         if(message.getFlag().equals("SEND_LIST")){
-            if(nb_robot_detect <= 2) {
-                nb_robot_detect++;
+            if(nbRobot <= 2) {
+                nbRobot++;
 
                 ArrayList<Node> list = new ArrayList<>();
                 list.addAll(tri());
@@ -49,21 +49,21 @@ public class BaseStation extends Node{
 
         nearestNeighbour(listNode_);
         triChildren();
-        if(nb_robot_detect >= 2 ) {
-            start = size - 2;
+        if(nbRobot >= 2 ) {
+            start = size - 1;
             size = listNode_.size();
             for (int i = start; i < size; i++) {
-                Tab_list[nb_robot_detect - 1].add(listNode_.get(i));
+                tabList[nbRobot - 1].add(listNode_.get(i));
             }
         }
 
         for (int i = start; i < size; i++) {
-            Tab_list[nb_robot_detect - 1].add(listNode_.get(i));
+            tabList[nbRobot - 1].add(listNode_.get(i));
         }
 
 
 
-        return Tab_list[nb_robot_detect - 1];
+        return tabList[nbRobot - 1];
     }
 
     public void triChildren(){
