@@ -1,0 +1,52 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+
+\title{Algorithmique de la mobilité \\ Wireless Rechargeable Sensor Networks}
+\author{Kinda AL CHAHID - Inès FRIHI - Othmane FOUZI}
+\date{January 2018}
+
+\usepackage{natbib}
+\usepackage{graphicx}
+
+\begin{document}
+
+\maketitle
+
+\section{Problématique}
+A partir d'une base fixe, de capteurs qui envoient des informations à intervalles irréguliers, et de deux robots capables de recharger les batteries.
+
+Les capteurs peuvent communiquer entre eux et la base. La base peut communiquer avec les capteurs et les robots, mais les robots ne peuvent communiquer qu'entre eux ou avec la base.
+
+Faire en sorte que les batteries capteurs ne tombent jamais à zéro.
+
+\section{Versions du code}
+Lors de ce projet, nous avons dû réécrire entièrement à quatre reprise le code. Chaque version possédaient des avantages et des inconvénients. Nous détaillerons ici chacun de ces aspects pour les parties intéressante.
+\subsection{Première version}
+La première version est assez basique et est basé sur le principe du voyageur de commerce (TSP - Travelling Salesman Problem\cite{TSP}).
+
+L'algorithme se basé sur le principe suivant:
+\begin{itemize}
+    \item La base envoyé une demande d'initialisation à ses descendants directs
+    \item Un capteur recevait l'ordre d'initialiser et envoyer à son parent (celui par qui il reçoit l'ordre) ses propres coordonnées.
+    \item Le parent recevant les coordonnées remonter l'information jusqu'à la base.
+    \item Lorsque la liste des coordonnées de tous les capteurs d'une topologie\footnote{schéma de capteur/base/robot prédéfinie} est reçue par la base, elle trie les capteurs selon leurs distances entre eux basé sur l'algorithme du Nearest Neighbour\footnote{"Nearest Neighbour" - on prend le premier élément de la liste. Puis on compare sa distance par rapport aux autres noeuds de l'arbre, et on sélection la plus petite (on retire les deux noeuds sélectionné de la liste). On répète cette étape pour chacun des noeuds jusqu'à avoir un parcours avec la plus petite distance pour chacun des points. Nous nous sommes basés sur l'algorithme fournit lors du tp correspondant par Karl Schulz}
+\end{itemize}
+
+\subsection{Troisième version - Optimisation du code}
+La troisième tentative fut d'essayer le rendre le code plus compatible en fonction des données de départs. C'est à dire en condition réelle d'une base qui découvre son environnement (nombre de noeuds, nombre de robots) et créer l'algorithme de chaque robot en fonction.
+
+Cependant cette version ne pouvait marcher. En effet, nous n'avons pas réussi à écrire un algorithme suffisamment différents pour chaque robot mais qui soit dépendant de la topologie. Nous avons donc essayer de rendre le code plus propre possible et moins dépendant de la topologie test fournit pour ce projet.
+
+\subsection{Quatrième version - Algorithme des descendants}
+L'algorithme du Nearest Neighbour fournissait des résultats interessant mais pas avec un temps infini comme ont pu le faire certain groupes de notre promotion. Pour atteindre leur performance, nous avons eu l'idée de créer un algortihme basé sur la cartographie du nombre de descandants de chacun des capteurs.
+
+Pour les besoin de description, nous nous baserons sur l'emplacement des capteurs et leur identifiants respectif de la topologie fournit.
+
+Dans cet exemple, le plus "gros capteurs" était celui possèdant 18 descedants. Etant donné qu'a chaque envoie (de type retransmission ou détection) le capteur pert de la batterie, l'algorithme se basé sur la visite plus fréquente de ces capteurs dit "gros" pour ignoré un temps les plus petits capteurs (les feuilles de l'arbre couvrant).
+
+\section{Conclusion}
+``I always thought something was fundamentally wrong with the universe'' \citep{adams1995hitchhiker}
+
+\bibliographystyle{plain}
+\bibliography{references}
+\end{document}
