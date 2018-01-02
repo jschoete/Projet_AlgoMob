@@ -48,7 +48,7 @@ public class BaseStation extends Node{
 
 
         nearestNeighbour(listNode_);
-        triChildren();
+        //triChildren();
         if(nbRobot >= 2 ) {
             start = size - 1;
             size = listNode_.size();
