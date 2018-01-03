@@ -22,12 +22,10 @@ public class Main {
 
         // Add sensors
         tp.setDefaultNodeModel(Sensor.class);
-        //tp.fromFile("src/sensors.tp"); // to be adapted
-        tp.fromFile("src/testTopology.tp");     //fichier test
+        tp.fromFile("src/sensors.tp"); // to be adapted
         // Add base station
         BaseStation baseStation = new BaseStation();
-        //tp.addNode(100, 80, baseStation);         //config de base
-        tp.addNode(270, 190, baseStation); //config test
+        tp.addNode(100, 80, baseStation);         //config de base
 
         // Add two robots
         Robot robot1 = new Robot();

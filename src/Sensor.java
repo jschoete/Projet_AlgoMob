@@ -23,7 +23,6 @@ public class Sensor extends Node {
                     getCommonLinkWith(parent).setWidth(4);
                     // propagate further
                     sendAll(message);
-                    //send(parent, new Message(node, "BAT"));
                 }
                 break;
             case "SENSING":
