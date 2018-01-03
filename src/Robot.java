@@ -4,13 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Robot extends WaypointNode {
-    int idR;
     Boolean onStart = true;
-    ArrayList<Node> list_node = new ArrayList<>();
-    public void setIdRobot(int id) {
-        this.idR = id;
-    }
-
+    ArrayList<Node> listNode_ = new ArrayList<>();
 
     @Override
     public void onStart() {
@@ -19,35 +14,27 @@ public class Robot extends WaypointNode {
         addDestination(base_x, base_y);
         onArrival();
     }
-
     @Override
     public void onMessage(Message message) {
-        if (message.getFlag().equals("LIST")) {
-            list_node.addAll((ArrayList<Node>)message.getContent());
-        }
+        if (message.getFlag().equals("LIST"))
+            listNode_.addAll((ArrayList<Node>)message.getContent());
     }
-
     @Override
     public void onSensingIn(Node node) {
-        if (node instanceof Sensor) {
+        if (node instanceof Sensor)
             ((Sensor) node).battery = 255;
-        }
         if(node instanceof BaseStation && onStart){
             send(node, new Message(null, "SEND_LIST"));
             onStart = false;
         }
 
     }
-
     @Override
     public void onArrival() {
-        if(!destinations.isEmpty() && !onStart){
+        if(!destinations.isEmpty() && !onStart)
             destinations.poll();
-        }
-        if(destinations.isEmpty() && !onStart) {
-            for (Node aList_node : list_node) {
+        if(destinations.isEmpty() && !onStart)
+            for (Node aList_node : listNode_)
                 this.addDestination(aList_node.getX(), aList_node.getY());
-            }
-        }
     }
 }

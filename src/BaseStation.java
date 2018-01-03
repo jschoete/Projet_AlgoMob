@@ -4,13 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BaseStation extends Node{
-    private ArrayList<Node> listNode1 = new ArrayList<>();
-    private ArrayList<Node> listNode2 = new ArrayList<>();
     private ArrayList<Node> listNode_ = new ArrayList<>();
-
-    private ArrayList[] tabList = {listNode1,listNode2};
-
-    int nbRobot = 0;
+    private ArrayList<Node> listRobot =  new ArrayList<>();
+    private ArrayList[] tabList = new ArrayList[50];
 
     @Override
     public void onStart() {
@@ -23,66 +19,54 @@ public class BaseStation extends Node{
 
     @Override
     public void onMessage(Message message) {
-        if(message.getFlag().equals("PARENT")){
-            if(!listNode_.contains(message.getContent())) {
-                listNode_.add((Node) message.getContent());
-            }
-        }
-        if(message.getFlag().equals("SEND_LIST")){
-            if(nbRobot <= 2) {
-                nbRobot++;
-                ArrayList<Node> list = new ArrayList<>();
-                list.addAll(tri());
-                if(listNode1.size() !=0 || listNode2.size() != 0)
-                    send(message.getSender(), new Message(list, "LIST"));
-            }
+        switch (message.getFlag()) {
+            case "PARENT":
+                if (!listNode_.contains(message.getContent()))
+                    listNode_.add((Node) message.getContent());
+                break;
+            case "SEND_LIST":
+                if(!listRobot.contains(message.getSender())) {
+                    listRobot.add(message.getSender());
+                    tri();
+                    if(tabList[listRobot.size() - 1].size() !=0)
+                        send(message.getSender(), new Message(tabList[listRobot.size() - 1], "LIST"));
+                }
+                break;
         }
     }
 
-    private ArrayList tri(){
+    private void tri(){
+        tabList[listRobot.size() - 1] = new ArrayList();
+        nearestNeighbour();
         int start = 0;
-        int size = listNode_.size()/4 ;
+        int size = listNode_.size() / 4;
 
-        nearestNeighbour(listNode_);
-        if(nbRobot >= 2 ) {
-            start = size - 2;
+        if (listRobot.size() > 1){
+            start = size - 1;
             size = listNode_.size();
-            for (int i = start; i < size; i++) {
-                tabList[nbRobot - 1].add(listNode_.get(i));
-            }
         }
-
-        for (int i = start; i < size; i++) {
-            tabList[nbRobot - 1].add(listNode_.get(i));
+        for (int j = start; j < size; j++) {
+            tabList[listRobot.size() - 1].add(listNode_.get(j));
         }
-
-
-
-        return tabList[nbRobot - 1];
     }
 
-    public ArrayList nearestNeighbour(ArrayList<Node> list) {
-        //la grande liste
+    public void nearestNeighbour() {
         List<Node> solution = new ArrayList<>();
-        if (!list.isEmpty()) {
-            // set first destination
-            solution.add(list.remove(0));
-
-            // search nearest neighbors and add them to list
-            while (!list.isEmpty()) {
+        if (!listNode_.isEmpty()) {
+            solution.add(listNode_.remove(0));
+            while (!listNode_.isEmpty()) {
                 double min = Double.MAX_VALUE;
                 int minIndex = 0;
-                for (int i = 0; i < list.size(); i++) {
-                    double dist = (list.get(i)).distance(solution.get(solution.size() - 1));
+                for (int i = 0; i < listNode_.size(); i++) {
+                    double dist = (listNode_.get(i)).distance(solution.get(solution.size() - 1));
                     if (min > dist) {
                         min = dist;
                         minIndex = i;
                     }
                 }
-                solution.add(list.remove(minIndex));
+                solution.add(listNode_.remove(minIndex));
             }
         }
-        list.addAll(solution);
-        return list;
+        listNode_.addAll(solution);
     }
 }

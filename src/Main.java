@@ -32,17 +32,14 @@ public class Main {
         Robot robot1 = new Robot();
         Robot robot2 = new Robot();
 
-        robot1.setIdRobot(0);
-        robot1.setIdRobot(1);
-
         robot1.setBase(baseStation.getX(), baseStation.getY());
         robot2.setBase(baseStation.getX(), baseStation.getY());
 
         tp.addNode(90, 40, robot1);
         tp.addNode(60, 80, robot2);
 
-        //new JViewer(tp);                  //Visualisation retiré
-        //tp.setClockSpeed(0);              //Acceleration au maximum - > Necessite un ordinateur assez puissant
+        new JViewer(tp);                  //Visualisation retiré
+        tp.setClockSpeed(0);              //Acceleration au maximum - > Necessite un ordinateur assez puissant
 
         tp.start(); // starts the clock
 

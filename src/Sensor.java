@@ -4,34 +4,36 @@ import java.awt.*;
 
 public class Sensor extends Node {
     private Node parent = null;
-    int battery = 255;
-    Boolean batteryZero = false;
-    private int time = 0;
-
+    private Boolean batteryZero = false;
     private Boolean send = true;
+    private int time = 0;
+    int battery = 255;
 
     @Override
     public void onMessage(Message message) {
         // "INIT" flag : construction of the spanning tree
         // "SENSING" flag : transmission of the sensed values
         // You can use other flags for your algorithms
-        if (message.getFlag().equals("INIT")) {
-            // if not yet in the tree
-            if (parent == null) {
-                // enter the tree
-                parent = message.getSender();
-                getCommonLinkWith(parent).setWidth(4);
-                // propagate further
-                sendAll(message);
-                //send(parent, new Message(node, "BAT"));
-            }
-        } else if (message.getFlag().equals("SENSING")) {
-            // retransmit up the tree
-            send(parent, message);
-        }
-        else if(message.getFlag().equals("PARENT")){
-            time = 0;
-            send(parent, message);
+        switch (message.getFlag()) {
+            case "INIT":
+                // if not yet in the tree
+                if (parent == null) {
+                    // enter the tree
+                    parent = message.getSender();
+                    getCommonLinkWith(parent).setWidth(4);
+                    // propagate further
+                    sendAll(message);
+                    //send(parent, new Message(node, "BAT"));
+                }
+                break;
+            case "SENSING":
+                // retransmit up the tree
+                send(parent, message);
+                break;
+            case "PARENT":
+                time = 0;
+                send(parent, message);
+                break;
         }
     }
 
