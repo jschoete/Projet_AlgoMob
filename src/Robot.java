@@ -10,7 +10,7 @@ public class Robot extends WaypointNode {
     @Override
     public void onStart() {
         setIcon("src/robot.png"); // to be adapted
-        setSensingRange(30);
+        setSensingRange(getRange());
         addDestination(base_x, base_y);
         onArrival();
     }

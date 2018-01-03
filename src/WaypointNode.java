@@ -12,6 +12,12 @@ public class WaypointNode extends Node implements ClockListener{
     double base_x;
     double base_y;
 
+    int range = 30;
+
+    public int getRange() {
+        return range;
+    }
+
     public void setBase(double x, double y){
         base_x = x;
         base_y = y;
@@ -29,12 +35,10 @@ public class WaypointNode extends Node implements ClockListener{
     public void onClock() {
         if (!destinations.isEmpty()) {
             Point2D dest = destinations.peek();
-            if (distance(dest) - 25 > speed) {
+            if (distance(dest) - (range - 3)  > speed) {
                 setDirection(dest);
                 move(speed);
             } else {
-                //setLocation(dest);
-                //destinations.poll();
                 onArrival();
             }
         }
