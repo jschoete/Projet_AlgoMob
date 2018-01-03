@@ -29,11 +29,11 @@ public class WaypointNode extends Node implements ClockListener{
     public void onClock() {
         if (!destinations.isEmpty()) {
             Point2D dest = destinations.peek();
-            if (distance(dest) > speed) {
+            if (distance(dest) - 25 > speed) {
                 setDirection(dest);
                 move(speed);
             } else {
-                setLocation(dest);
+                //setLocation(dest);
                 //destinations.poll();
                 onArrival();
             }

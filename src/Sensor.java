@@ -5,10 +5,7 @@ import java.awt.*;
 public class Sensor extends Node {
     private Node parent = null;
     int battery = 255;
-    private Boolean isbattery = false;
-
-    private int nb_children = 0;
-
+    Boolean batteryZero = false;
     private int time = 0;
 
     private Boolean send = true;
@@ -32,8 +29,7 @@ public class Sensor extends Node {
             // retransmit up the tree
             send(parent, message);
         }
-        else if(message.getFlag().equals("PAR")){
-            this.nb_children++;
+        else if(message.getFlag().equals("PARENT")){
             time = 0;
             send(parent, message);
         }
@@ -44,9 +40,10 @@ public class Sensor extends Node {
         if (battery > 0) {
             super.send(destination, message);
             battery--;
-            if(battery == 0){
-                System.out.println("Battery = 0 !!!!" + getTime()+" "+this.getID());
-                isbattery = true;
+            if(battery == 0 && !batteryZero){
+                System.out.println("Battery " + getTime()+" "+this.getID());
+                batteryZero = true;
+                System.exit(0);
             }
             updateColor();
         }
@@ -59,18 +56,11 @@ public class Sensor extends Node {
                 double sensedValue = Math.random(); // sense a value
                 send(parent, new Message(sensedValue, "SENSING")); // send it to parent
             }
-
-
             if(this.time > 0 && send){
                 this.send = false;
-
                 Node node = new Node();
                 node.setLocation(this.getX(), this.getY());
-
-                node.setID(this.nb_children);
-
-                send(parent, new Message(node, "PAR"));
-                //System.out.println("nb_children    "+this.nb_children);
+                send(parent, new Message(node, "PARENT"));
                 time = 0;
             }
             else {

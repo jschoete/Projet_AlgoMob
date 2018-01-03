@@ -41,9 +41,10 @@ public class Main {
         tp.addNode(90, 40, robot1);
         tp.addNode(60, 80, robot2);
 
-        new JViewer(tp);
+        //new JViewer(tp);                  //Visualisation retiré
+        //tp.setClockSpeed(0);              //Acceleration au maximum - > Necessite un ordinateur assez puissant
 
-        tp.setClockSpeed(0);
         tp.start(); // starts the clock
+
     }
 }

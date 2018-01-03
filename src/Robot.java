@@ -45,13 +45,9 @@ public class Robot extends WaypointNode {
             destinations.poll();
         }
         if(destinations.isEmpty() && !onStart) {
-            tri();
             for (Node aList_node : list_node) {
                 this.addDestination(aList_node.getX(), aList_node.getY());
             }
         }
-    }
-
-    public void tri() {
     }
 }
