@@ -19,6 +19,11 @@ public class BaseStation extends Node{
 
     @Override
     public void onMessage(Message message) {
+        /**
+         * PARENT : noeud qui envoie ses coordonnées - Stockage dans une liste (listNode_)
+         *
+         * SEND_LIST : Robot qui signal sa présence et demande une liste. Mise en standby en attendant la réception de tous les noeuds.
+         */
         switch (message.getFlag()) {
             case "PARENT":
                 if (!listNode_.contains(message.getContent()))
@@ -36,10 +41,17 @@ public class BaseStation extends Node{
     }
 
     private void tri(){
+        /**
+         * Tri de listNode_ par un nearest neighbour
+         *
+         * Répartition des noeuds entre les deux robots.
+         * Le premier robot possèdera 1/4 de listNode_ et l'autre 3/4
+         * Non modulable à 3 ou plus de robot.
+         */
         tabList[listRobot.size() - 1] = new ArrayList();
         nearestNeighbour();
         int start = 0;
-        int size = listNode_.size() / 4;
+        int size = listNode_.size() / 4 - 1;
 
         if (listRobot.size() > 1){
             start = size - 1;
@@ -51,6 +63,11 @@ public class BaseStation extends Node{
     }
 
     public void nearestNeighbour() {
+        /**
+         * Nearest Neighbour
+         * Algorithme de tri des noeuds en fonction de leur distance par rapport entre eux.
+         * Parcours de la plus courte distance
+         */
         List<Node> solution = new ArrayList<>();
         if (!listNode_.isEmpty()) {
             solution.add(listNode_.remove(0));

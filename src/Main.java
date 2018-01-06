@@ -26,6 +26,7 @@ public class Main {
         // Add base station
         BaseStation baseStation = new BaseStation();
         tp.addNode(100, 80, baseStation);         //config de base
+        //tp.addNode(270, 180, baseStation);         //config de test
 
         // Add two robots
         Robot robot1 = new Robot();
@@ -41,6 +42,5 @@ public class Main {
         tp.setClockSpeed(0);              //Acceleration au maximum - > Necessite un ordinateur assez puissant
 
         tp.start(); // starts the clock
-
     }
 }
