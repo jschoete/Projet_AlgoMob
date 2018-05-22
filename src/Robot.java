@@ -52,4 +52,6 @@ public class Robot extends WaypointNode {
             for (Node aList_node : listNode_)
                 this.addDestination(aList_node.getX(), aList_node.getY());
     }
+
+	//TODO hey supprimes moi pls
 }
